@@ -7,7 +7,10 @@ Vue.use(wd);
 
 export default new Vuex.Store({
   state: {
-    dicList: [['app', 'lorem ipsum asld as;dfj aasjf asdfj']],
+    dicList: [
+      ['definition', 'a statement of the exact meaning of a word, especially in a dictionary.'],
+      ['app', 'asdflorem ipsum asld as;dfj aasjf asdfj']
+    ],
   },
   mutations: {
     addWord(state, word) {

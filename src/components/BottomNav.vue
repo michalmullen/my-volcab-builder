@@ -1,12 +1,12 @@
 <template>
-  <v-bottom-navigation mandatory app :value="activeBtn" grow color="teal">
-    <v-btn>
-      <span>Favorites</span>
+  <v-bottom-navigation mandatory app grow color="teal">
+    <v-btn to="/">
+      <span>New</span>
       <v-icon>mdi-playlist-plus</v-icon>
     </v-btn>
 
-    <v-btn>
-      <span>Nearby</span>
+    <v-btn to="about">
+      <span>Stored</span>
       <v-icon>mdi-playlist-check</v-icon>
     </v-btn>
   </v-bottom-navigation>
@@ -15,9 +15,7 @@
 <script>
 export default {
   data() {
-    return {
-      activeBtn: 1,
-    };
+    return {};
   },
 };
 </script>
