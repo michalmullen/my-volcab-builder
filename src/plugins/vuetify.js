@@ -1,7 +1,22 @@
-import Vue from 'vue';
-import Vuetify from 'vuetify/lib';
+import Vue from "vue";
+import Vuetify from "vuetify/lib";
 
 Vue.use(Vuetify);
 
-export default new Vuetify({
+const vuetify = new Vuetify({
+	theme: {
+		dark: true,
+		themes: {
+			dark: {
+				primary: "#140C50",
+				navColor: "#060039",
+				primaryAccent: "#553DD5",
+				secondary: "#3FEE9E",
+				accent: "#FF446F",
+				card: "5539ff",
+			},
+		},
+	},
 });
+
+export default vuetify;
