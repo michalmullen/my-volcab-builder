@@ -6,44 +6,54 @@
 					>{{ words[i - 1][0] }}
 				</v-expansion-panel-header>
 				<v-expansion-panel-content class="ma-0 pa-0">
-					<v-row>
-						<v-col class="flex-grow-4 flex-shrink-0">
-							{{ words[i - 1][1] }}
-						</v-col>
-						<v-col class="flex-grow-0 flex-shrink-4">
-							<v-btn icon color="secondary">
-								<v-icon class="align-end">mdi-pencil</v-icon>
-							</v-btn>
-						</v-col>
-					</v-row>
+					{{ words[i - 1][1] }}
+				</v-expansion-panel-content>
+			</v-expansion-panel>
+		</v-expansion-panels> -->
+
+		<!-- <v-expansion-panels v-for="i in words.length" :key="i">
+			<v-expansion-panel class="pb-3">
+				<v-expansion-panel-header>
+					{{ words[i - 1][0] }}
+				</v-expansion-panel-header>
+				<v-expansion-panel-content>
+					<v-card-actions>
+						{{ words[i - 1][1] }}
+
+						<v-spacer></v-spacer>
+
+						<v-btn icon>
+							<v-icon>mdi-pencil</v-icon>
+						</v-btn>
+					</v-card-actions>
 				</v-expansion-panel-content>
 			</v-expansion-panel>
 		</v-expansion-panels> -->
 
 		<v-row dense>
 			<v-col cols="12">
-				<v-card class="mx-auto mb-3" v-for="i in words.length" :key="i">
-					<v-card-actions>
+				<v-card class="mx-auto mb-3" v-for="item in words" :key="item">
+					<v-card-actions @click="item.show = !item.show">
 						<v-card-title>
-							{{ words[i - 1][0] }}
+							{{ item.word }}
 						</v-card-title>
 
 						<v-spacer></v-spacer>
 
-						<v-btn icon @click="show = !show">
+						<v-btn icon>
 							<v-icon>{{
-								show ? "mdi-chevron-up" : "mdi-chevron-down"
+								item.show ? "mdi-chevron-up" : "mdi-chevron-down"
 							}}</v-icon>
 						</v-btn>
 					</v-card-actions>
 
 					<v-expand-transition>
-						<div v-show="show">
+						<div v-show="item.show">
 							<v-divider></v-divider>
 
 							<v-card-actions>
 								<v-card-text>
-									{{ words[i - 1][1] }}
+									{{ item.definition }}
 								</v-card-text>
 
 								<v-spacer></v-spacer>
@@ -59,10 +69,10 @@
 		</v-row>
 
 		<v-row justify="center">
-			<v-dialog v-model="dialog" scrollable max-width="300px">
+			<v-dialog v-model="definitions" scrollable max-width="300px">
 				<v-card>
 					<v-card-text style="height: 300px;">
-						<v-radio-group v-model="dialogm1" column>
+						<v-radio-group column>
 							<v-radio label="Bahamas, The" value="bahamas"></v-radio>
 							<v-radio label="Bahrain" value="bahrain"></v-radio>
 							<v-radio label="Bangladesh" value="bangladesh"></v-radio>
@@ -85,8 +95,12 @@
 					</v-card-text>
 					<v-divider></v-divider>
 					<v-card-actions>
-						<v-btn color="secondary" text @click="dialog = false">Close</v-btn>
-						<v-btn color="secondary" text @click="dialog = false">Save</v-btn>
+						<v-btn color="secondary" text @click="definitions = false"
+							>Close</v-btn
+						>
+						<v-btn color="secondary" text @click="definitions = false"
+							>Save</v-btn
+						>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
@@ -103,12 +117,20 @@ export default {
 	},
 
 	created() {
+		console.log(this.words);
 		this.$store.commit("getWords");
+		console.log(this.words[0].word);
 	},
 
+	methods: {
+		show(index) {
+			console.log(this.words[0].show);
+			this.store.commit("changeShow", index);
+			console.log(this.words[0].show);
+		},
+	},
 	data: () => ({
-		dialog: false,
-		show: false,
+		definitions: false,
 	}),
 };
 </script>

@@ -1,10 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import wd from "word-definition";
 import db from "../components/firebaseinit";
 
 Vue.use(Vuex);
-Vue.use(wd);
 
 export default new Vuex.Store({
 	state: {
@@ -12,10 +10,11 @@ export default new Vuex.Store({
 	},
 	mutations: {
 		addWord(state, word) {
-			let definition = wd.getDef(word, "en", null, function(definition) {
-				return definition;
+			state.wordList.push({
+				word: word,
+				definition: "bla bla bla",
+				show: false,
 			});
-			state.wordList.push([word, definition, false]);
 		},
 		getWords(state) {
 			db.collection("user_words")
@@ -25,14 +24,17 @@ export default new Vuex.Store({
 						const words = doc.data().words;
 						console.log(words);
 						for (var i = 0; i < words.length; i++) {
-							state.wordList.push([
-								doc.data().words[i].word,
-								doc.data().words[i].definition,
-								false,
-							]);
+							state.wordList.push({
+								word: doc.data().words[i].word,
+								definition: doc.data().words[i].definition,
+								show: true,
+							});
 						}
 					});
 				});
+		},
+		changeShow(state, index) {
+			state.wordList[index].show = !state.wordList[index].show;
 		},
 	},
 	actions: {},
