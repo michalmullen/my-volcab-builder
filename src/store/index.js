@@ -8,33 +8,29 @@ Vue.use(wd);
 
 export default new Vuex.Store({
 	state: {
-		dicList: [
-			[
-				"definition",
-				"a statement of the exact meaning of a word, especially in a dictionary.",
-			],
-			["app", "asdflorem ipsum asld as;dfj aasjf asdfj"],
-		],
+		wordList: [],
 	},
 	mutations: {
 		addWord(state, word) {
 			let definition = wd.getDef(word, "en", null, function(definition) {
 				return definition;
 			});
-			state.dicList.push([word, definition]);
+			state.wordList.push([word, definition, false]);
 		},
 		getWords(state) {
 			db.collection("user_words")
 				.get()
 				.then((querySnapshot) => {
 					querySnapshot.forEach((doc) => {
-						console.log(doc.data());
-						const wordDef = [
-							doc.data().words[0].word,
-							doc.data().words[0].definition,
-						];
-						console.log(wordDef);
-						state.dicList.push(wordDef);
+						const words = doc.data().words;
+						console.log(words);
+						for (var i = 0; i < words.length; i++) {
+							state.wordList.push([
+								doc.data().words[i].word,
+								doc.data().words[i].definition,
+								false,
+							]);
+						}
 					});
 				});
 		},
