@@ -5,16 +5,20 @@ import db from "../components/firebaseinit";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+	strict: false,
 	state: {
-		wordList: [],
+		words: [],
+		firebaseInit: false,
+		defSelector: false,
 	},
 	mutations: {
-		addWord(state, word) {
-			state.wordList.push({
+		addWord(state, word, definition) {
+			state.words.push({
 				word: word,
-				definition: "bla bla bla",
+				definition: definition,
 				show: false,
 			});
+			state.firebaseInit = true;
 		},
 		getWords(state) {
 			db.collection("user_words")
@@ -24,17 +28,18 @@ export default new Vuex.Store({
 						const words = doc.data().words;
 						console.log(words);
 						for (var i = 0; i < words.length; i++) {
-							state.wordList.push({
+							state.words.push({
 								word: doc.data().words[i].word,
 								definition: doc.data().words[i].definition,
-								show: true,
+								show: false,
 							});
 						}
 					});
 				});
 		},
-		changeShow(state, index) {
-			state.wordList[index].show = !state.wordList[index].show;
+		reverseShow(state, index) {
+			console.log(state.words[index].show);
+			state.words[index].show = !state.words[index].show;
 		},
 	},
 	actions: {},
