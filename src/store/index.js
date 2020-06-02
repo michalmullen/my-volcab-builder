@@ -12,13 +12,13 @@ export default new Vuex.Store({
 		defSelector: false,
 	},
 	mutations: {
-		addWord(state, word, definition) {
+		addWord(state, newWord) {
+			console.log("vuex", newWord);
 			state.words.push({
-				word: word,
-				definition: definition,
+				word: newWord[0],
+				definition: newWord[1],
 				show: false,
 			});
-			state.firebaseInit = true;
 		},
 		getWords(state) {
 			db.collection("user_words")
@@ -36,6 +36,7 @@ export default new Vuex.Store({
 						}
 					});
 				});
+			state.firebaseInit = true;
 		},
 		reverseShow(state, index) {
 			console.log(state.words[index].show);

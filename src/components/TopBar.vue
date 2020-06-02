@@ -20,7 +20,7 @@
 			<v-dialog v-model="show" scrollable max-width="300px">
 				<v-card>
 					<v-card-text style="height: 300px;">
-						<v-radio-group column>
+						<v-radio-group column v-model="definition">
 							<v-radio
 								color="secondary"
 								v-for="(item, index) in definitions"
@@ -33,7 +33,7 @@
 					<v-divider></v-divider>
 					<v-card-actions>
 						<v-btn color="secondary" text @click="show = false">Close</v-btn>
-						<v-btn color="secondary" text @click="show = false">Save</v-btn>
+						<v-btn color="secondary" text @click="addWord">Save</v-btn>
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
@@ -47,7 +47,9 @@ const axios = require("axios");
 export default {
 	methods: {
 		addWord() {
-			this.$store.commit("addWord", this.word, this.definition);
+			let newWord = [this.word, this.definition];
+			this.$store.commit("addWord", newWord);
+			this.show = false;
 			this.word = "";
 		},
 		getDefinition() {
@@ -67,42 +69,44 @@ export default {
 				},
 			})
 				.then((response) => {
-					let def = response.data.meaning;
+					if (response.result_code == 200) {
+						let def = response.data.meaning;
+						let defs = [];
+						if (def.adjective != "") {
+							let adj = def.adjective.split("(adj) ").filter(function(el) {
+								return el.length != 0;
+							});
 
-					let defs = [];
+							defs = defs.concat(adj);
+						}
+						if (def.adverb != "") {
+							let adv = def.adverb.split("(adv) ").filter(function(el) {
+								return el.length != 0;
+							});
 
-					if (def.adjective != "") {
-						let adj = def.adjective.split("(adj) ").filter(function(el) {
-							return el.length != 0;
-						});
+							defs = defs.concat(adv);
+						}
+						if (def.noun) {
+							let noun = def.noun.split("(nou) ").filter(function(el) {
+								return el.length != 0;
+							});
 
-						defs = defs.concat(adj);
+							defs = defs.concat(noun);
+						}
+						if (def.verb != "") {
+							let verb = def.verb.split("(vrb) ").filter(function(el) {
+								return el.length != 0;
+							});
+
+							defs = defs.concat(verb);
+						}
+
+						this.definitions = defs;
+						this.show = true;
+					} else {
+						this.definition = "";
+						this.addWord();
 					}
-					if (def.adverb != "") {
-						let adv = def.adverb.split("(adv) ").filter(function(el) {
-							return el.length != 0;
-						});
-
-						defs = defs.concat(adv);
-					}
-					if (def.noun) {
-						let noun = def.noun.split("(nou) ").filter(function(el) {
-							return el.length != 0;
-						});
-
-						defs = defs.concat(noun);
-					}
-					if (def.verb != "") {
-						let verb = def.verb.split("(vrb) ").filter(function(el) {
-							return el.length != 0;
-						});
-
-						defs = defs.concat(verb);
-					}
-
-					this.definitions = defs;
-					this.show = true;
-					this.word = "";
 				})
 				.catch((error) => {
 					console.log(error);
@@ -114,7 +118,7 @@ export default {
 		word: "",
 		show: false,
 		definitions: null,
-		response: null,
+		definition: "",
 	}),
 };
 </script>
