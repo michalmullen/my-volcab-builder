@@ -1,35 +1,5 @@
 <template>
 	<v-container grid-list-xs>
-		<!-- <v-expansion-panels focusable>
-			<v-expansion-panel v-for="i in words.length" :key="i">
-				<v-expansion-panel-header
-					>{{ words[i - 1][0] }}
-				</v-expansion-panel-header>
-				<v-expansion-panel-content class="ma-0 pa-0">
-					{{ words[i - 1][1] }}
-				</v-expansion-panel-content>
-			</v-expansion-panel>
-		</v-expansion-panels> -->
-
-		<!-- <v-expansion-panels v-for="i in words.length" :key="i">
-			<v-expansion-panel class="pb-3">
-				<v-expansion-panel-header>
-					{{ words[i - 1][0] }}
-				</v-expansion-panel-header>
-				<v-expansion-panel-content>
-					<v-card-actions>
-						{{ words[i - 1][1] }}
-
-						<v-spacer></v-spacer>
-
-						<v-btn icon>
-							<v-icon>mdi-pencil</v-icon>
-						</v-btn>
-					</v-card-actions>
-				</v-expansion-panel-content>
-			</v-expansion-panel>
-		</v-expansion-panels> -->
-
 		<v-row dense>
 			<v-col cols="12">
 				<v-card

@@ -20,29 +20,14 @@
 			<v-dialog v-model="show" scrollable max-width="300px">
 				<v-card>
 					<v-card-text style="height: 300px;">
-						<v-radio-group
-							column
-							v-for="(item, index) in this.definitions"
-							:key="index"
-						>
-							<v-radio label="Bahamas, The" value="bahamas"></v-radio>
-							<v-radio label="Bahrain" value="bahrain"></v-radio>
-							<v-radio label="Bangladesh" value="bangladesh"></v-radio>
-							<v-radio label="Barbados" value="barbados"></v-radio>
-							<v-radio label="Belarus" value="belarus"></v-radio>
-							<v-radio label="Belgium" value="belgium"></v-radio>
-							<v-radio label="Belize" value="belize"></v-radio>
-							<v-radio label="Benin" value="benin"></v-radio>
-							<v-radio label="Bhutan" value="bhutan"></v-radio>
-							<v-radio label="Bolivia" value="bolivia"></v-radio>
-							<v-radio label="Bosnia and Herzegovina" value="bosnia"></v-radio>
-							<v-radio label="Botswana" value="botswana"></v-radio>
-							<v-radio label="Brazil" value="brazil"></v-radio>
-							<v-radio label="Brunei" value="brunei"></v-radio>
-							<v-radio label="Bulgaria" value="bulgaria"></v-radio>
-							<v-radio label="Burkina Faso" value="burkina"></v-radio>
-							<v-radio label="Burma" value="burma"></v-radio>
-							<v-radio label="Burundi" value="burundi"></v-radio>
+						<v-radio-group column>
+							<v-radio
+								color="secondary"
+								v-for="(item, index) in definitions"
+								:key="index"
+								:label="item"
+								:value="item"
+							></v-radio>
 						</v-radio-group>
 					</v-card-text>
 					<v-divider></v-divider>
@@ -57,18 +42,7 @@
 </template>
 
 <script>
-var unirest = require("unirest");
-
-var req = unirest(
-	"GET",
-	"https://twinword-word-graph-dictionary.p.rapidapi.com/definition/"
-);
-
-req.headers({
-	"x-rapidapi-host": "twinword-word-graph-dictionary.p.rapidapi.com",
-	"x-rapidapi-key": "250ec18612msh7dee980b0152fb5p11e163jsncb8370237c38",
-	useQueryString: true,
-});
+const axios = require("axios");
 
 export default {
 	methods: {
@@ -76,55 +50,71 @@ export default {
 			this.$store.commit("addWord", this.word, this.definition);
 			this.word = "";
 		},
-		async getDefinition() {
-			req.query({
-				entry: this.word,
-			});
+		getDefinition() {
+			axios({
+				method: "GET",
+				url:
+					"https://twinword-word-graph-dictionary.p.rapidapi.com/definition/",
+				headers: {
+					"content-type": "application/octet-stream",
+					"x-rapidapi-host": "twinword-word-graph-dictionary.p.rapidapi.com",
+					"x-rapidapi-key":
+						"250ec18612msh7dee980b0152fb5p11e163jsncb8370237c38",
+					useQueryString: true,
+				},
+				params: {
+					entry: this.word,
+				},
+			})
+				.then((response) => {
+					let def = response.data.meaning;
 
-			await req.end(function(res) {
-				if (res.error) throw new Error(res.error);
+					let defs = [];
 
-				let body = res.body;
-				const def = body.meaning;
+					if (def.adjective != "") {
+						let adj = def.adjective.split("(adj) ").filter(function(el) {
+							return el.length != 0;
+						});
 
-				console.log(body.meaning);
-				this.definitions = [];
-				if (def.adjective != "") {
-					let adj = def.adjective.split("(adj) ").filter(function(el) {
-						return el.length != 0;
-					});
-					this.definitions = this.definitions.concat(adj);
-				}
-				if (def.adverb != "") {
-					let adv = def.adverb.split("(adv) ").filter(function(el) {
-						return el.length != 0;
-					});
-					this.definitions = this.definitions.concat(adv);
-				}
-				if (def.noun) {
-					let noun = def.noun.split("(nou) ").filter(function(el) {
-						return el.length != 0;
-					});
-					console.log(noun);
-					this.definitions = this.definitions.concat(noun);
-				}
-				if (def.verb != "") {
-					let verb = def.verb.split("(vrb) ").filter(function(el) {
-						return el.length != 0;
-					});
-					this.definitions = this.definitions.concat(verb);
-				}
-			});
-			console.log(this.definitions);
-			this.show = true;
-			this.word = "";
+						defs = defs.concat(adj);
+					}
+					if (def.adverb != "") {
+						let adv = def.adverb.split("(adv) ").filter(function(el) {
+							return el.length != 0;
+						});
+
+						defs = defs.concat(adv);
+					}
+					if (def.noun) {
+						let noun = def.noun.split("(nou) ").filter(function(el) {
+							return el.length != 0;
+						});
+
+						defs = defs.concat(noun);
+					}
+					if (def.verb != "") {
+						let verb = def.verb.split("(vrb) ").filter(function(el) {
+							return el.length != 0;
+						});
+
+						defs = defs.concat(verb);
+					}
+
+					this.definitions = defs;
+					this.show = true;
+					this.word = "";
+				})
+				.catch((error) => {
+					console.log(error);
+				});
 		},
 	},
 
 	data: () => ({
 		word: "",
 		show: false,
-		definitions: [],
+		definitions: null,
+		response: null,
 	}),
 };
 </script>
