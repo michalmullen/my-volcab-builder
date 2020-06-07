@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div v-if="login">
 		<v-app-bar app>
 			<v-text-field
 				flat
@@ -119,6 +119,7 @@ export default {
 		show: false,
 		definitions: null,
 		definition: "",
+		login: false,
 	}),
 };
 </script>

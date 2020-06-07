@@ -8,7 +8,7 @@ const vuetify = new Vuetify({
 		dark: true,
 		themes: {
 			dark: {
-				primary: "#140C50",
+				primary: "#3FEE9E",
 				navColor: "#060039",
 				primaryAccent: "#553DD5",
 				secondary: "#3FEE9E",
